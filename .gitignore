@@ -1,0 +1,56 @@
+# Thư mục node_modules ở mọi nơi
+node_modules/
+**/node_modules/
+
+# File build, dist của backend/frontend
+dist/
+**/dist/
+build/
+**/build/
+.next/
+out/
+coverage/
+.nyc_output/
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# .env & config riêng tư
+.env
+.env.*
+!.env.example
+
+# Docker volumes, dữ liệu Postgres, pgAdmin
+pgdata/
+pgadmin_data/
+*.pid
+
+# VSCode, IDE, hệ điều hành rác
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Test output
+test-report.xml
+junit.xml
+
+# Mac system files
+.AppleDouble
+.LSOverride
+
+# Ignore Next.js build output
+.next/
+out/
+
+# Ignore coverage reports
+coverage/
+
+# Ignore lock files nếu dùng nhiều package manager, chỉ giữ 1 loại
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
