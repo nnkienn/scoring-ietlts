@@ -13,3 +13,38 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+model User {
+  id String @id @default(uuid())
+  username String @unique
+  email String @unique
+  password String?
+  role Role
+  avatarUrl String?  @map("avatar_url")
+  dateOfBirth DateTime? @map("date_of_birth")
+  createdAt DateTime @default(now())  @map("created_at")
+  SocialAccount SocialAccount[]
+
+}
+
+enum Role {
+  admin
+  teacher
+  student
+}
+
+model SocialAccount {
+  id         String   @id @default(uuid())
+  provider   Provider
+  providerId String   // ID từ Google/Facebook/Apple
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerId]) // đảm bảo một social account không bị trùng
+}
+
+enum Provider {
+  GOOGLE
+  FACEBOOK
+  APPLE
+}
+
