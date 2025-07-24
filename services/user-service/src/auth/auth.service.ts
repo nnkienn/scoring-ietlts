@@ -14,40 +14,29 @@ export class AuthService {
     ) { }
     async register(dto: RegisterDto) {
         const hashed = await bcrypt.hash(dto.password, 10);
-        // Kiểm tra role nhận từ frontend
-        const role = dto.role.toLowerCase()
-
+        const role = dto.role.toLowerCase();
         if (role !== 'student' && role !== 'teacher') {
-            throw new Error('Invalid role')
+            throw new Error('Invalid role');
         }
         const user = await this.prisma.user.create({
             data: {
                 email: dto.email,
                 username: dto.username,
                 password: hashed,
-                role: role as Role
+                role: role as Role,
             }
-        })
-        const token = this.jwtService.sign({ userId: user.id })
-        return { user, token }
+        });
+        const token = this.jwtService.sign({ sub: user.id }); // <-- Sửa tại đây
+        return { user, token };
     }
-    async login(dto: LoginDto) {
-        const user = await this.prisma.user.findUnique({
-            where: { email: dto.email }
-        })
-        if (!user)
-            throw new UnauthorizedException('Invalid credentials')
-        if (!user.password) {
-            throw new UnauthorizedException('Invalid credentials');
-        }
 
+    async login(dto: LoginDto) {
+        const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
+        if (!user || !user.password) throw new UnauthorizedException('Invalid credentials');
         const isMatch = await bcrypt.compare(dto.password, user.password);
         if (!isMatch) throw new UnauthorizedException('Invalid credentials');
-
-        const jwtToken = this.jwtService.sign({ userId: user.id })
+        const jwtToken = this.jwtService.sign({ sub: user.id }); // <-- Sửa tại đây
         return { user, jwtToken };
-
-
-
     }
+
 }
